@@ -101,7 +101,7 @@ const deleteUser = (index) => {
                       placeholder="Nuevo usuario"
                       className="border p-2 w-full"
                     />
-                    <button onClick={addUser} className="mt-2 bg-blue-600 text-white px-4 py-2 rounded">
+                    <button onClick={addUser} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
                       Añadir Usuario
                     </button>
                   </div>

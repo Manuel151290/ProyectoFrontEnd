@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, ClipboardList, Activity, LogOut } from "lucide-react";
 
 const Header = ({ onLogout }) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleLogout = () => {
     onLogout();
     history.push("/login"); // Redirige a la página de inicio de sesión
@@ -14,23 +22,26 @@ const Header = ({ onLogout }) => {
   const handleHome = () => {
     history.push("/inicio"); // Redirige a la página de inicio
   };
+
+  const isMobile = windowWidth < 768;
+
   return (
     <header className="w-full bg-blue-600 text-white p-4 shadow-md">
       <div className="max-w-5xl mx-auto flex justify-between items-center">
         <h1 className="text-xl font-bold flex items-center">
           <Activity className="w-6 h-6 mr-2" />
-          ProyectoFrontEnd
+          {!isMobile && 'ProyectoFrontEnd'}
         </h1>
         <nav>
           <ul className="flex gap-6">
             <li className="flex items-center gap-2 hover:underline" onClick={handleHome}>
-              <Home className="w-5 h-5" /> Inicio
+              <Home className="w-5 h-5" /> {!isMobile && 'Inicio'}
             </li>
             <li className="flex items-center gap-2 hover:underline" onClick={handleTicket}>
-              <ClipboardList className="w-5 h-5" /> Ticketera
+              <ClipboardList className="w-5 h-5" /> {!isMobile && 'Ticketera'}
             </li>
             <li className="flex items-center gap-2 hover:underline cursor-pointer" onClick={handleLogout}>
-              <LogOut className="w-5 h-5" /> Logout
+              <LogOut className="w-5 h-5" /> {!isMobile && 'Logout'}
             </li>
           </ul>
         </nav>

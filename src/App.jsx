@@ -62,7 +62,7 @@ function App() {
           </div>
         </div>
       ) : (
-        <>
+        <>  
           <Header onLogout={handleLogout} onHome={handleHome} onTicket={handleTicket} />
           <main className="flex-grow flex flex-col items-center p-4 md:p-6">
             <h1 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-6 text-center">

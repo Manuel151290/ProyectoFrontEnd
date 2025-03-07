@@ -15,6 +15,10 @@ function App() {
   const [tickets, setTickets] = useState([]);
   const [sensores, setSensores] = useState([]);
   const [page, setPage] = useState(1);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [timeOfDay, setTimeOfDay] = useState('');
 
   useEffect(() => {
     fetchTickets(page).then((data) => setTickets(data.results));
@@ -39,6 +43,7 @@ function App() {
     setIsTicketPanelOpen(!isTicketPanelOpen);
     setIsUserPanelOpen(false); // Cierra el panel de usuarios si está abierto
   };
+
   const handleHome = () => {
     history.push("/inicio"); // Redirige a la página de inicio
   };
@@ -46,6 +51,27 @@ function App() {
   const handleTicket = () => {
     history.push("/ticketera"); // Redirige a la página de ticketera
   };
+
+  const handleFilter = () => {
+    // Filtrar tickets y sensores basados en las fechas seleccionadas
+    fetchTickets(page, startDate, endDate).then((data) => setTickets(data.results));
+    fetchSensores(page, startDate, endDate).then((data) => setSensores(data.results));
+  };
+
+  const filteredTickets = tickets.filter(ticket => {
+    const ticketDate = new Date(ticket.fecha);
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+    const matchesDate = (!start || ticketDate >= start) && (!end || ticketDate <= end);
+    const matchesText = ticket.cliente.toLowerCase().includes(searchText.toLowerCase());
+    const matchesTimeOfDay = timeOfDay === '' || (
+      (timeOfDay === 'morning' && ticketDate.getHours() < 12) ||
+      (timeOfDay === 'afternoon' && ticketDate.getHours() >= 12 && ticketDate.getHours() < 18) ||
+      (timeOfDay === 'night' && ticketDate.getHours() >= 18)
+    );
+    return matchesDate && matchesText && matchesTimeOfDay;
+  });
+
   return (
     <div className="h-screen bg-gray-100 flex flex-col">
       {!isAuthenticated ? (
@@ -69,16 +95,69 @@ function App() {
               Sistema de Ticketera y Sensores
             </h1>
 
+            {/* Formulario de Filtro */}
+            <div className="mb-6">
+              <form className="flex gap-4">
+                <div>
+                  <label className="block text-gray-700">Fecha Inicio:</label>
+                  <input 
+                    type="date" 
+                    value={startDate} 
+                    onChange={(e) => setStartDate(e.target.value)} 
+                    className="border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Fecha Fin:</label>
+                  <input 
+                    type="date" 
+                    value={endDate} 
+                    onChange={(e) => setEndDate(e.target.value)} 
+                    className="border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Buscar:</label>
+                  <input 
+                    type="text" 
+                    value={searchText} 
+                    onChange={(e) => setSearchText(e.target.value)} 
+                    className="border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Hora del Día:</label>
+                  <select 
+                    value={timeOfDay} 
+                    onChange={(e) => setTimeOfDay(e.target.value)} 
+                    className="border rounded p-2"
+                  >
+                    <option value="">Todos</option>
+                    <option value="morning">Mañana</option>
+                    <option value="afternoon">Tarde</option>
+                    <option value="night">Noche</option>
+                  </select>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={handleFilter} 
+                  className="self-end bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                >
+                  Filtrar
+                </button>
+              </form>
+            </div>
+
             {/* Contenedor de tarjetas */}
             <div className="grid md:grid-cols-2 gap-6 w-full max-w-5xl">
               {/* Tarjeta de Turnos */}
               <section className="bg-white shadow-lg rounded-lg p-6">
                 <h2 className="text-2xl font-bold text-gray-700 mb-4">Turnos en Espera</h2>
-                {tickets.length === 0 ? (
-                  <p className="text-gray-500">Cargando turnos...</p>
+                {filteredTickets.length === 0 ? (
+                  <p className="text-gray-500">No hay turnos disponibles.</p>
                 ) : (
                   <ul className="space-y-3">
-                    {tickets.map((ticket) => (
+                    {filteredTickets.map((ticket) => (
                       <li key={ticket.id} className="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition">
                         <span className="font-semibold">{ticket.cliente}</span> - {ticket.tipo_atencion} 
                         <span className={`ml-2 px-2 py-1 text-sm rounded ${ticket.estado === "En espera" ? "bg-yellow-500 text-white" : "bg-green-500 text-white"}`}>

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { fetchTickets, fetchSensores } from "./services/api";
 import Login from "./components/Login";
-import Header from "./components/header";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 import UserPanel from "./components/UserPanel";
 import TicketPanel from "./components/TicketPanel";
+import Ticketera from "./components/Ticketera";
 import { Users, ClipboardList } from "lucide-react";
 
 function App() {
@@ -21,9 +22,11 @@ function App() {
   const [timeOfDay, setTimeOfDay] = useState('');
 
   useEffect(() => {
-    fetchTickets(page).then((data) => setTickets(data.results));
-    fetchSensores(page).then((data) => setSensores(data.results));
-  }, [page]);
+    if (isAuthenticated) {
+      fetchTickets(page).then((data) => setTickets(data.results));
+      fetchSensores(page).then((data) => setSensores(data.results));
+    }
+  }, [page, isAuthenticated]);
 
   const handleLogin = () => {
     setIsAuthenticated(true);

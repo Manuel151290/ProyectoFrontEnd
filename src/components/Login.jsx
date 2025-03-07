@@ -5,7 +5,6 @@ const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const [btnStyle, setBtnStyle] = useState({});
 
   const handleLogin = () => {
     if (username === "admin" && password === "1234") {
@@ -52,7 +51,7 @@ const Login = ({ onLogin }) => {
       
       <button
         onClick={handleLogin}
-        className="w-full bg-blue-600 text-white p-2 rounded"
+        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 active:bg-blue-800 transition transform active:scale-95"
       >
         Iniciar Sesión
       </button>

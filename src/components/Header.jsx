@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Home, ClipboardList, Activity, LogOut } from "lucide-react";
 
 const Header = ({ onLogout }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -12,15 +14,15 @@ const Header = ({ onLogout }) => {
 
   const handleLogout = () => {
     onLogout();
-    history.push("/login"); // Redirige a la página de inicio de sesión
+    navigate("/login"); // Redirige a la página de inicio de sesión
   };
 
   const handleTicket = () => {
-    history.push("/ticketera"); // Redirige a la página de ticketera
+    navigate("/ticketera"); // Redirige a la página de ticketera
   };
 
   const handleHome = () => {
-    history.push("/inicio"); // Redirige a la página de inicio
+    navigate("/inicio"); // Redirige a la página de inicio
   };
 
   const isMobile = windowWidth < 768;
@@ -34,10 +36,10 @@ const Header = ({ onLogout }) => {
         </h1>
         <nav>
           <ul className="flex gap-6">
-            <li className="flex items-center gap-2 hover:underline" onClick={handleHome}>
+            <li className="flex items-center gap-2 hover:underline cursor-pointer" onClick={handleHome}>
               <Home className="w-5 h-5" /> {!isMobile && 'Inicio'}
             </li>
-            <li className="flex items-center gap-2 hover:underline" onClick={handleTicket}>
+            <li className="flex items-center gap-2 hover:underline cursor-pointer" onClick={handleTicket}>
               <ClipboardList className="w-5 h-5" /> {!isMobile && 'Ticketera'}
             </li>
             <li className="flex items-center gap-2 hover:underline cursor-pointer" onClick={handleLogout}>

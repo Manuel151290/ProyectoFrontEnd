@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchTickets, fetchSensores } from "./services/api";
 import Login from "./components/Login";
-import Header from "./components/header";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 import UserPanel from "./components/UserPanel";
 import TicketPanel from "./components/TicketPanel";

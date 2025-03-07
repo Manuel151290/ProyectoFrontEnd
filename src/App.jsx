@@ -187,6 +187,37 @@ function App() {
               </section>
             </div>
 
+            {/* Grilla de Resultados */}
+            <div className="w-full max-w-5xl mt-6">
+              <h2 className="text-2xl font-bold text-gray-700 mb-4">Resultados Filtrados</h2>
+              <table className="min-w-full bg-white shadow-lg rounded-lg">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b">Cliente</th>
+                    <th className="py-2 px-4 border-b">Tipo de Atención</th>
+                    <th className="py-2 px-4 border-b">Estado</th>
+                    <th className="py-2 px-4 border-b">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTickets.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="py-4 px-4 text-center text-gray-500">No hay resultados disponibles.</td>
+                    </tr>
+                  ) : (
+                    filteredTickets.map((ticket) => (
+                      <tr key={ticket.id}>
+                        <td className="py-2 px-4 border-b">{ticket.cliente}</td>
+                        <td className="py-2 px-4 border-b">{ticket.tipo_atencion}</td>
+                        <td className="py-2 px-4 border-b">{ticket.estado}</td>
+                        <td className="py-2 px-4 border-b">{new Date(ticket.fecha).toLocaleString()}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
             {/* Controles de Paginación */}
             <nav className="flex gap-4 mt-6">
               <button 

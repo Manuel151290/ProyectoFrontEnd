@@ -30,7 +30,9 @@ const Login = ({ onLogin }) => {
         <p className="text-gray-600 mt-2">Bienvenido</p>
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-700 mb-4">Iniciar Sesión</h2>
+      <h2 className="text-2xl font-bold text-gray-700 mb-4 hover:text-blue-600 transition-colors duration-300">
+        Iniciar Sesión
+      </h2>
 
       <input
         type="text"

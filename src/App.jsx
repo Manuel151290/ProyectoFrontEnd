@@ -94,8 +94,9 @@ function App() {
             <h1 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-6 text-center">
               Sistema de Ticketera y Sensores
             </h1>
+
             {/* Contenedor de tarjetas */}
-            <div className="grid md:grid-cols-2 gap-6 w-full max-w-5xl">
+            <div className="grid md:grid-cols-2 gap-6 w-full max-w-5xl mb-6">
               {/* Tarjeta de Turnos */}
               <section className="bg-white shadow-lg rounded-lg p-6">
                 <h2 className="text-2xl font-bold text-gray-700 mb-4">Turnos en Espera</h2>
@@ -132,10 +133,11 @@ function App() {
                 )}
               </section>
             </div>
-               {/* Formulario de Filtro */}
-               <div className="mb-6">
-              <form className="flex gap-4">
-                <div>
+
+            {/* Formulario de Filtro */}
+            <div className="mb-6 w-full max-w-5xl">
+              <form className="flex flex-wrap gap-4">
+                <div className="flex flex-col">
                   <label className="block text-gray-700">Fecha Inicio:</label>
                   <input 
                     type="date" 
@@ -144,7 +146,7 @@ function App() {
                     className="border rounded p-2"
                   />
                 </div>
-                <div>
+                <div className="flex flex-col">
                   <label className="block text-gray-700">Fecha Fin:</label>
                   <input 
                     type="date" 
@@ -153,7 +155,7 @@ function App() {
                     className="border rounded p-2"
                   />
                 </div>
-                <div>
+                <div className="flex flex-col">
                   <label className="block text-gray-700">Buscar:</label>
                   <input 
                     type="text" 
@@ -162,7 +164,7 @@ function App() {
                     className="border rounded p-2"
                   />
                 </div>
-                <div>
+                <div className="flex flex-col">
                   <label className="block text-gray-700">Hora del Día:</label>
                   <select 
                     value={timeOfDay} 

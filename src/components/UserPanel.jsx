@@ -1,72 +1,88 @@
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Avatar from "boring-avatars";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { fetchUsers, createUser, updateUser, deleteUser } from "../services/api";
 
 const UserPanel = ({ isOpen, closePanel }) => {
-  const [users, setUsers] = useState(["Juan", "Maria", "Pedro"]);
+  const [users, setUsers] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editName, setEditName] = useState("");
   const [newUser, setNewUser] = useState("");
 
+  useEffect(() => {
+    // Obtener usuarios de MockAPI al cargar el componente
+    fetchUsers().then(data => setUsers(data));
+  }, []);
+
   const startEdit = (index) => {
     setEditIndex(index);
-    setEditName(users[index]);
+    setEditName(users[index].name);
   };
 
   const saveEdit = () => {
-    const updatedUsers = [...users];
-    updatedUsers[editIndex] = editName;
-    setUsers(updatedUsers);
-    setEditIndex(null);
-    setEditName("");
+    const userId = users[editIndex].id;
+    updateUser(userId, editName).then(updatedUser => {
+      if (updatedUser) {
+        const updatedUsers = [...users];
+        updatedUsers[editIndex] = updatedUser;
+        setUsers(updatedUsers);
+        setEditIndex(null);
+        setEditName("");
+      }
+    });
   };
 
- 
-const deleteUser = (index) => {
-  const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-      confirmButton: "btn btn-success",
-      cancelButton: "btn btn-danger"
-    },
-    buttonsStyling: false
-  });
+  const handleDeleteUser = (index) => {
+    const userId = users[index].id;
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
 
-  swalWithBootstrapButtons.fire({
-    title: "¿Estás seguro?",
-    text: "¡No podrás revertir esto!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, eliminarlo",
-    cancelButtonText: "No, cancelar",
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Aquí puedes proceder con la eliminación del usuario
-      const newUsers = [...users];
-      newUsers.splice(index, 1);
-      setUsers(newUsers);
+    swalWithBootstrapButtons.fire({
+      title: "¿Estás seguro?",
+      text: "¡No podrás revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminarlo",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteUser(userId).then(() => {
+          const newUsers = [...users];
+          newUsers.splice(index, 1);
+          setUsers(newUsers);
 
-      swalWithBootstrapButtons.fire({
-        title: "¡Eliminado!",
-        text: "El usuario ha sido eliminado.",
-        icon: "success"
-      });
-    } else if (result.dismiss === Swal.DismissReason.cancel) {
-      swalWithBootstrapButtons.fire({
-        title: "Cancelado",
-        text: "El usuario está a salvo :)",
-        icon: "error"
-      });
-    }
-  });
-};
+          swalWithBootstrapButtons.fire({
+            title: "¡Eliminado!",
+            text: "El usuario ha sido eliminado.",
+            icon: "success"
+          });
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelado",
+          text: "El usuario está a salvo :)",
+          icon: "error"
+        });
+      }
+    });
+  };
 
-  const addUser = () => {
+  const handleAddUser = () => {
     if (newUser.trim() !== "") {
-      setUsers([...users, newUser]);
-      setNewUser("");
+      createUser(newUser).then(addedUser => {
+        if (addedUser) {
+          setUsers([...users, addedUser]);
+          setNewUser("");
+        }
+      });
     }
   };
 
@@ -101,7 +117,7 @@ const deleteUser = (index) => {
                       placeholder="Nuevo usuario"
                       className="border p-2 w-full"
                     />
-                    <button onClick={addUser} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                    <button onClick={handleAddUser} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
                       Añadir Usuario
                     </button>
                   </div>
@@ -111,7 +127,7 @@ const deleteUser = (index) => {
                         <div className="flex items-center">
                           <Avatar
                             size={40}
-                            name={user}
+                            name={user.name}
                             variant="beam"
                             colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
                           />
@@ -123,7 +139,7 @@ const deleteUser = (index) => {
                               className="ml-4 border p-2"
                             />
                           ) : (
-                            <span className="ml-4">{user}</span>
+                            <span className="ml-4">{user.name}</span>
                           )}
                         </div>
                         <div>
@@ -136,7 +152,7 @@ const deleteUser = (index) => {
                               <button onClick={() => startEdit(index)} className="ml-2 bg-yellow-600 text-white px-4 py-2 rounded">
                                 Editar
                               </button>
-                              <button onClick={() => deleteUser(index)} className="ml-2 bg-red-600 text-white px-4 py-2 rounded">
+                              <button onClick={() => handleDeleteUser(index)} className="ml-2 bg-red-600 text-white px-4 py-2 rounded">
                                 Eliminar
                               </button>
                             </>

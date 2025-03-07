@@ -80,20 +80,12 @@ function App() {
       {!isAuthenticated ? (
         <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 text-center flex flex-col items-center mx-auto my-auto">
           <Login onLogin={handleLogin} setLoginAttempted={setLoginAttempted} loginAttempted={loginAttempted} />
-          
-          {/* Opciones adicionales */}
-          <div className="mt-4 text-sm text-gray-800 flex flex-col items-center center">
-            <label className="flex items-center space-x-2">
-              <input type="checkbox" className="form-checkbox w-6 h-6" />
-              <span> Recuérdame</span>
-            </label>
-            <a href="#" className="mt-2 text-blue-600 cursor-pointer hover:underline">¿Olvidaste tu contraseña?</a>
-          </div>
         </div>
       ) : (
         <>  
           <Header onLogout={handleLogout} onHome={handleHome} onTicket={handleTicket} />
-          <Ticketera filteredTickets={filteredTickets} sensores={sensores} />
+          <Ticketera filteredTickets={filteredTickets} sensores={sensores} page={page} setPage={setPage} />
+          
           {/* Menú Lateral */}
           <div className="fixed right-0 top-1/4 transform -translate-y-1/2 bg-blue-600 text-white rounded-l-lg shadow-lg">
             <div className="flex flex-col space-y-2 p-2">

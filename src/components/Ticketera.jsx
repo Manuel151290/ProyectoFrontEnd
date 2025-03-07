@@ -1,6 +1,16 @@
 import React from 'react';
 
-const Ticketera = ({ filteredTickets, sensores }) => {
+const Ticketera = ({ filteredTickets, sensores, page, setPage }) => {
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    setPage(page + 1);
+  };
+
   return (
     <main className="flex-grow flex flex-col items-center p-4 md:p-6">
       <h1 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-6 text-center">
@@ -38,12 +48,29 @@ const Ticketera = ({ filteredTickets, sensores }) => {
               {sensores.map((sensor) => (
                 <li key={sensor.id} className="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition">
                   <span className="font-semibold">{sensor.ubicacion}</span> - {sensor.estado} 
-                  <span className="ml-2 text-sm text-gray-600">({sensor.valor})</span>
+                  <span className="ml-2 text-sm text-gray-600">({sensor.comentario})</span>
                 </li>
               ))}
             </ul>
           )}
         </section>
+      </div>
+
+      {/* Controles de Paginación */}
+      <div className="flex justify-between w-full max-w-5xl">
+        <button
+          onClick={handlePreviousPage}
+          disabled={page === 1}
+          className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <button
+          onClick={handleNextPage}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          Siguiente
+        </button>
       </div>
     </main>
   );

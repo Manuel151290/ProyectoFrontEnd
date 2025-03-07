@@ -1,10 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Header from './Header';
+import { fetchTickets } from '../services/api';
 
-const Inicio = ({ filteredTickets, startDate, endDate, searchText, timeOfDay, setStartDate, setEndDate, setSearchText, setTimeOfDay, handleFilter, page, setPage }) => {
+const Inicio = ({ filteredTickets, sensores, startDate, endDate, searchText, timeOfDay, setStartDate, setEndDate, setSearchText, setTimeOfDay, handleFilter, page, setPage }) => {
+  const [tickets, setTickets] = useState([]);
+  const [filteredTickets, setFilteredTickets] = useState([]);
+
+  useEffect(() => {
+    fetchTickets(page).then((data) => setTickets(data.results));
+  }, [page]);
+
+  useEffect(() => {
+    handleFilter();
+  }, [tickets, startDate, endDate, searchText, timeOfDay]);
+
+  const handleFilter = () => {
+    const filtered = tickets.filter(ticket => {
+      const ticketDate = new Date(ticket.fecha);
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+      const matchesDate = (!start || ticketDate >= start) && (!end || ticketDate <= end);
+      const matchesText = ticket.cliente.toLowerCase().includes(searchText.toLowerCase());
+      const matchesTimeOfDay = timeOfDay === '' || (
+        (timeOfDay === 'morning' && ticketDate.getHours() < 12) ||
+        (timeOfDay === 'afternoon' && ticketDate.getHours() >= 12 && ticketDate.getHours() < 18) ||
+        (timeOfDay === 'night' && ticketDate.getHours() >= 18)
+      );
+      return matchesDate && matchesText && matchesTimeOfDay;
+    });
+    setFilteredTickets(filtered);
+  };
+
   return (
-    <div>
-      <Header onLogout={handleLogout} onHome={handleHome} onTicket={handleTicket} />
-      <Ticketera filteredTickets={filteredTickets} sensores={sensores} />
+    <>
+      <Header />
       <main className="flex-grow flex flex-col items-center p-4 md:p-6">
         {/* Formulario de Filtro */}
         <div className="mb-6 w-full max-w-5xl">
@@ -107,7 +136,7 @@ const Inicio = ({ filteredTickets, startDate, endDate, searchText, timeOfDay, se
           </button>
         </nav>
       </main>
-    </div>
+    </>
   );
 };
 

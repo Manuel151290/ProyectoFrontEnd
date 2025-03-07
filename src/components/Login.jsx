@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Avatar from "boring-avatars";
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, setLoginAttempted, loginAttempted }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -57,6 +57,15 @@ const Login = ({ onLogin }) => {
       </button>
 
       {error && <p className="text-red-500 mt-2">Usuario o contraseña incorrectos</p>}
+
+     {/* Opciones adicionales */}
+     <div className="mt-4 text-sm text-gray-800 flex flex-col items-center center">
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="form-checkbox w-6 h-6" />
+              <span> Recuérdame</span>
+            </label>
+            <a href="#" className="mt-2 text-blue-600 cursor-pointer hover:underline">¿Olvidaste tu contraseña?</a>
+     </div>
     </div>
   );
 };
